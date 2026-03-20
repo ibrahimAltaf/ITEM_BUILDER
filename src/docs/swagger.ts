@@ -27,6 +27,14 @@ const definition = {
       name: "Upload",
       description: "Image upload (Cloudinary) - admin/staff only",
     },
+    { name: "Cart", description: "Shopping cart" },
+    { name: "Addresses", description: "US + APO/FPO/DPO shipping addresses" },
+    { name: "Shipping", description: "Shippo live rates (CA → US)" },
+    { name: "Orders", description: "Checkout, tax, Stripe payments" },
+    {
+      name: "Integrations",
+      description: "QuickBooks / external services",
+    },
   ],
   components: {
     securitySchemes: {

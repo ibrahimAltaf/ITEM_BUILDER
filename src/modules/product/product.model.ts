@@ -44,6 +44,11 @@ const productSchema = new Schema(
     variants: [productVariantSchema],
     addOns: [productAddOnSchema],
     attributes: { type: Schema.Types.Mixed, default: {} },
+    /** Optional — used for Shippo rate quotes */
+    weightOz: { type: Number, min: 0, default: null },
+    lengthIn: { type: Number, min: 0, default: null },
+    widthIn: { type: Number, min: 0, default: null },
+    heightIn: { type: Number, min: 0, default: null },
     isActive: { type: Boolean, default: true },
     createdBy: { type: Schema.Types.ObjectId, ref: "User" },
   },

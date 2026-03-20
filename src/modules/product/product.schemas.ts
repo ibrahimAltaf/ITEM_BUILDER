@@ -33,6 +33,10 @@ export const createProductSchema = z.object({
   variants: z.array(productVariantSchema).optional().default([]),
   addOns: z.array(productAddOnSchema).optional().default([]),
   attributes: z.record(z.string(), z.unknown()).optional().default({}),
+  weightOz: z.number().min(0).optional(),
+  lengthIn: z.number().min(0).optional(),
+  widthIn: z.number().min(0).optional(),
+  heightIn: z.number().min(0).optional(),
   isActive: z.boolean().optional().default(true),
 });
 
@@ -52,6 +56,10 @@ export const updateProductSchema = z
     variants: z.array(productVariantSchema).optional().nullable(),
     addOns: z.array(productAddOnSchema).optional().nullable(),
     attributes: z.record(z.string(), z.unknown()).optional(),
+    weightOz: z.number().min(0).optional().nullable(),
+    lengthIn: z.number().min(0).optional().nullable(),
+    widthIn: z.number().min(0).optional().nullable(),
+    heightIn: z.number().min(0).optional().nullable(),
     isActive: z.boolean().optional(),
   })
   .refine((data) => Object.keys(data).length > 0, {

@@ -157,20 +157,30 @@ npm run dev
 
 # 🔐 Environment Variables
 
-Create `.env` file:
+See **`.env.example`** for full list (Mongo, JWT, Cloudinary, **Shippo**, **Stripe**, **TaxJar**, **QuickBooks** placeholders).
 
-```
-PORT=8080
+---
 
-MONGO_URI=mongodb://localhost:27017/item-builder
+# 🛒 Ecommerce checkout (US + military mail)
 
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRES_IN=7d
+Flow:
 
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-```
+1. **Cart** — `PUT /api/v1/cart` (items: `productId`, `quantity`, optional `variantIndex`, `addOnIndexes`).
+2. **Address** — `POST /api/v1/addresses` (US street or **APO/FPO/DPO**: city = `APO`/`FPO`/`DPO`, state = `AA`/`AE`/`AP`, ZIP `09xxx`).
+3. **Rates** — `GET /api/v1/shipping/rates?addressId=...` (**Shippo**, ship-from CA in `.env`).
+4. **Preview** — `POST /api/v1/orders/preview` with `addressId` + `shippoRateObjectId` (tax: **TaxJar** or **CA_FALLBACK_TAX_RATE** for CA destinations).
+5. **Pay** — `POST /api/v1/orders` with `paymentMethod`: `"stripe"` (default) or `"cod"`. Stripe returns `clientSecret`; COD skips Stripe and sets order to **processing** / **unpaid** until admin marks **paid** after cash collection.
+6. **Webhook** — `POST /api/v1/webhooks/stripe` (raw body) with `STRIPE_WEBHOOK_SECRET`.
+
+**Payments:** Stripe `automatic_payment_methods` supports **card**, **US bank (ACH)**, **Link**; **Apple Pay** via Safari / wallet. **PayPal** and **Venmo** are not fully covered by Stripe alone — use **PayPal Commerce** or **Braintree** as an extra integration if required.
+
+**QuickBooks:** `GET /api/v1/integrations/quickbooks/status` — OAuth + SalesReceipt sync is a **Phase 2** placeholder; payments stay on Stripe until wired.
+
+**Admin orders:** `GET /api/v1/admin/orders` (optional `?userId=`), `POST /api/v1/admin/orders` (body: `userId`, `items[]`, `addressId`, and either `shippoRateObjectId` **or** `shippingCents` for manual shipping), `GET/PATCH /api/v1/admin/orders/:id`, `GET /api/v1/admin/orders/stats/summary`. PATCH body may include `paymentStatus` (e.g. mark COD **paid**).
+
+**Admin addresses:** `GET/POST /api/v1/admin/users/:userId/addresses`, `PATCH/DELETE .../addresses/:addressId`.
+
+Set **`weightOz` / dimensions** on products (or defaults in `.env`) for accurate Shippo quotes.
 
 ---
 

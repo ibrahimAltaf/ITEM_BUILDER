@@ -41,6 +41,10 @@ export interface CreateProductInput {
   variants?: ProductVariantInput[];
   addOns?: ProductAddOnInput[];
   attributes?: Record<string, unknown>;
+  weightOz?: number | null;
+  lengthIn?: number | null;
+  widthIn?: number | null;
+  heightIn?: number | null;
   isActive?: boolean;
 }
 
@@ -59,6 +63,10 @@ export interface UpdateProductInput {
   variants?: ProductVariantInput[] | null;
   addOns?: ProductAddOnInput[] | null;
   attributes?: Record<string, unknown>;
+  weightOz?: number | null;
+  lengthIn?: number | null;
+  widthIn?: number | null;
+  heightIn?: number | null;
   isActive?: boolean;
 }
 
@@ -109,6 +117,10 @@ export async function createProduct(
     variants: data.variants ?? [],
     addOns: data.addOns ?? [],
     attributes: data.attributes ?? {},
+    weightOz: data.weightOz ?? null,
+    lengthIn: data.lengthIn ?? null,
+    widthIn: data.widthIn ?? null,
+    heightIn: data.heightIn ?? null,
     isActive: data.isActive ?? true,
     createdBy,
   });
@@ -158,6 +170,10 @@ export async function updateProduct(
   if (data.variants !== undefined) product.variants = data.variants ?? [];
   if (data.addOns !== undefined) product.addOns = data.addOns ?? [];
   if (data.attributes !== undefined) product.attributes = data.attributes;
+  if (data.weightOz !== undefined) product.weightOz = data.weightOz ?? null;
+  if (data.lengthIn !== undefined) product.lengthIn = data.lengthIn ?? null;
+  if (data.widthIn !== undefined) product.widthIn = data.widthIn ?? null;
+  if (data.heightIn !== undefined) product.heightIn = data.heightIn ?? null;
   if (data.isActive !== undefined) product.isActive = data.isActive;
 
   await product.save();

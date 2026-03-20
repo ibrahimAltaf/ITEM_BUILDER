@@ -1,5 +1,7 @@
 import { Router } from "express";
 import * as ctrl from "./admin.controller";
+import * as ordCtrl from "./adminOrders.controller";
+import * as addrAdmin from "./adminAddresses.controller";
 import { requireAuth } from "../../middlewares/auth";
 import { requireRole } from "../../middlewares/requireRole";
 
@@ -179,5 +181,164 @@ router.delete("/staff/:id", requireRole("admin"), ctrl.deleteStaff);
  *         description: Forbidden - only admin can create admin
  */
 router.post("/admins", requireRole("admin"), ctrl.createAdmin);
+
+/**
+ * @openapi
+ * /api/v1/admin/users/{userId}/addresses:
+ *   get:
+ *     summary: List addresses for a customer (admin/staff)
+ *     tags: [Admin]
+ *     security: [{ bearerAuth: [] }]
+ */
+router.get(
+  "/users/:userId/addresses",
+  requireRole("admin", "staff"),
+  addrAdmin.listUserAddresses
+);
+
+/**
+ * @openapi
+ * /api/v1/admin/users/{userId}/addresses:
+ *   post:
+ *     summary: Create address for a customer
+ *     tags: [Admin]
+ *     security: [{ bearerAuth: [] }]
+ */
+router.post(
+  "/users/:userId/addresses",
+  requireRole("admin", "staff"),
+  addrAdmin.createUserAddress
+);
+
+/**
+ * @openapi
+ * /api/v1/admin/users/{userId}/addresses/{addressId}:
+ *   patch:
+ *     summary: Update customer address
+ *     tags: [Admin]
+ *     security: [{ bearerAuth: [] }]
+ */
+router.patch(
+  "/users/:userId/addresses/:addressId",
+  requireRole("admin", "staff"),
+  addrAdmin.updateUserAddress
+);
+
+/**
+ * @openapi
+ * /api/v1/admin/users/{userId}/addresses/{addressId}:
+ *   delete:
+ *     summary: Delete customer address
+ *     tags: [Admin]
+ *     security: [{ bearerAuth: [] }]
+ */
+router.delete(
+  "/users/:userId/addresses/:addressId",
+  requireRole("admin", "staff"),
+  addrAdmin.deleteUserAddress
+);
+
+/**
+ * @openapi
+ * /api/v1/admin/orders:
+ *   get:
+ *     summary: List orders (admin/staff)
+ *     tags: [Admin]
+ *     security: [{ bearerAuth: [] }]
+ */
+router.get("/orders", requireRole("admin", "staff"), ordCtrl.listOrders);
+
+/**
+ * @openapi
+ * /api/v1/admin/orders:
+ *   post:
+ *     summary: Create order for a customer (COD or Stripe; manual shippingCents if no Shippo)
+ *     tags: [Admin]
+ *     security: [{ bearerAuth: [] }]
+ */
+router.post("/orders", requireRole("admin", "staff"), ordCtrl.createAdminOrder);
+
+/**
+ * @openapi
+ * /api/v1/admin/orders/stats/summary:
+ *   get:
+ *     summary: Order counts by status + paid revenue (admin/staff)
+ *     tags: [Admin]
+ *     security: [{ bearerAuth: [] }]
+ */
+router.get(
+  "/orders/stats/summary",
+  requireRole("admin", "staff"),
+  ordCtrl.orderStats
+);
+
+/**
+ * @openapi
+ * /api/v1/admin/orders/stats/revenue/summary:
+ *   get:
+ *     summary: Paid revenue totals (subtotal + shipping + tax + total)
+ *     tags: [Admin]
+ *     security: [{ bearerAuth: [] }]
+ */
+router.get(
+  "/orders/stats/revenue/summary",
+  requireRole("admin", "staff"),
+  ordCtrl.revenueSummary
+);
+
+/**
+ * @openapi
+ * /api/v1/admin/orders/stats/revenue/by-payment-method:
+ *   get:
+ *     summary: Paid revenue split by paymentMethod (cod vs stripe)
+ *     tags: [Admin]
+ *     security: [{ bearerAuth: [] }]
+ */
+router.get(
+  "/orders/stats/revenue/by-payment-method",
+  requireRole("admin", "staff"),
+  ordCtrl.revenueByPaymentMethod
+);
+
+/**
+ * @openapi
+ * /api/v1/admin/orders/stats/revenue/daily:
+ *   get:
+ *     summary: Paid daily revenue for last N days
+ *     tags: [Admin]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: query
+ *         name: days
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 30
+ */
+router.get(
+  "/orders/stats/revenue/daily",
+  requireRole("admin", "staff"),
+  ordCtrl.revenueDaily
+);
+
+/**
+ * @openapi
+ * /api/v1/admin/orders/{id}:
+ *   get:
+ *     summary: Get order by id
+ *     tags: [Admin]
+ *     security: [{ bearerAuth: [] }]
+ */
+router.get("/orders/:id", requireRole("admin", "staff"), ordCtrl.getOrder);
+
+/**
+ * @openapi
+ * /api/v1/admin/orders/{id}:
+ *   patch:
+ *     summary: Update order status / tracking
+ *     tags: [Admin]
+ *     security: [{ bearerAuth: [] }]
+ */
+router.patch("/orders/:id", requireRole("admin", "staff"), ordCtrl.updateOrder);
 
 export default router;

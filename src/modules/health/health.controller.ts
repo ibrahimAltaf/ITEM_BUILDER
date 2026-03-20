@@ -29,6 +29,12 @@ export function getHealth(_req: Request, res: Response) {
     apis: {
       health: "GET /api/v1/health",
       auth: "/api/v1/auth",
+      cart: "/api/v1/cart",
+      addresses: "/api/v1/addresses",
+      shipping: "/api/v1/shipping/rates",
+      orders: "/api/v1/orders",
+      admin: "/api/v1/admin",
+      integrations: "/api/v1/integrations",
       docs: "GET /docs",
       openapi: "GET /docs.json",
     },
