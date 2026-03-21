@@ -155,6 +155,19 @@ npm run dev
 
 ---
 
+# ☁️ Deploy (Render / similar)
+
+This repo is **TypeScript**: production runs compiled JS from `dist/`.
+
+- **Build command:** `npm install && npm run build`
+- **Start command:** `npm start` **or** `node index.js` **or** `node dist/server.js`
+
+Do **not** use only `npm install` without `npm run build` — otherwise `dist/server.js` will not exist.
+
+Set **`PORT`** from the host (Render injects it) and **`MONGO_URI`** in environment variables.
+
+---
+
 # 🔐 Environment Variables
 
 See **`.env.example`** for full list (Mongo, JWT, Cloudinary, **Shippo**, **Stripe**, **TaxJar**, **QuickBooks** placeholders).
